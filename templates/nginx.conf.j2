@@ -1,0 +1,18 @@
+server {
+        listen 8080 default_server;
+      
+        listen 443 ssl;
+        root /usr/share/nginx/html;
+        index index.html;
+
+        server_name '"{{ web_server }}".lab.local';
+        ssl_certificate /etc/nginx/ssl/nginx.crt;
+        ssl_certificate_key /etc/nginx/ssl/nginx.key;
+
+        location / {
+                 try_files $uri $uri/ =404;
+                   }
+        }
+
+
+      

@@ -1,0 +1,101 @@
+---
+
+- name: Configure Webserver with Nginx & SSL self-signed certs
+  hosts: webservers
+  become: True
+  vars_files:
+    group_vars/all
+  tasks:
+
+    - name: add hostname as a dynamic variable
+      command: hostname
+      register: result
+      
+    - name: store variable as a fact
+      block:
+        - set_fact:
+            web_server: "{{ result.stdout }}"
+
+
+    - name: creat an ssl_docs directory on the remote server
+      shell:
+        cmd: 'mkdir -p {{ ssl_docs }}'
+
+
+    - name: copy cnf file
+      template:
+        src: templates/nginx.cnf.j2
+        dest: "{{ cnf_file }}"
+        mode: 0774
+        owner: root
+        group: root
+
+
+    - name: copy ssl script
+      template:
+        src: 'templates/create_ssl.sh.j2'
+        dest: "{{ ssl_script }}"
+        mode: 0774
+        owner: root
+        group: root
+
+
+    - name: run script
+      shell:
+        cmd: 'sh {{ ssl_script }}'
+
+
+    - name: install nginx
+      apt: 
+        name: nginx 
+        update_cache: yes    
+# update_cache is the same as running apt update on a debian system
+
+    - name: create ssl dirs
+      file: 
+        path: "{{ ssl_dir }}"
+        state: directory
+
+    - name: copy TLS key
+      file:
+        src:   '{{ ssl_docs }}nginx.key'
+        dest: "{{ key_file }}"
+        state: hard
+        owner: root
+        mode:  0600
+      notify: restart nginx
+
+
+    - name: copy TLS cert
+      file:
+        src:   '{{ ssl_docs }}nginx.crt'
+        dest:  "{{ cert_file }}"
+        state: hard
+      notify: restart nginx
+
+  
+    - name: copy nginx config file
+      copy: 
+        src: templates/nginx.conf.j2 
+        dest: "{{ conf_file }}"
+      notify: restart nginx
+
+    - name: enable configuration
+      file:
+        dest: /etc/nginx/sites-enabled/default
+        src: "{{ conf_file }}"
+        state: link
+      notify: restart nginx
+
+    - name: copy index.html
+      template: 
+        src: templates/index.html.j2 
+        dest: /usr/share/nginx/html/index.html
+        mode: 0644
+
+  handlers:
+    - name: restart nginx
+      service: 
+        name: nginx 
+        state: restarted
+...

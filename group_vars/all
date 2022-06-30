@@ -1,0 +1,7 @@
+ssl_dir:      /etc/nginx/ssl/
+key_file:     /etc/nginx/ssl/nginx.key
+ssl_docs:     /home/ansible/Ansible/nginx/ssl_docs/
+cert_file:    /etc/nginx/ssl/nginx.crt
+conf_file:    /etc/nginx/sites-available/default
+cnf_file:     /home/ansible/Ansible/nginx/ssl_docs/nginx.cnf
+ssl_script:   /home/ansible/Ansible/nginx/ssl_docs/create_ssl.sh

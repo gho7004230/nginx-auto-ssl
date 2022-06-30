@@ -1,0 +1,9 @@
+[ansible-control]
+debian1.lab.local
+
+[clients]
+debian2.lab.local
+debian3.lab.local
+
+[webservers]
+debian3
