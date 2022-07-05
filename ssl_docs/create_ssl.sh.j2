@@ -1,6 +1,0 @@
-sudo rm -rf {{ ssl_docs }}/nginx.crt {{ ssl_docs }}nginx.key
-sudo rm -rf /usr/local/share/ca-certificates/nginx.crt
-sudo openssl req -x509 -nodes -days 3650 -newkey rsa:4096 -config {{ ssl_docs }}nginx.cnf -keyout {{ ssl_docs }}nginx.key -out {{ ssl_docs }}nginx.crt
-sudo chown ansible:ansible {{ ssl_docs }}nginx.*
-sudo cp nginx.crt /usr/local/share/ca-certificates/
-sudo update-ca-certificates
