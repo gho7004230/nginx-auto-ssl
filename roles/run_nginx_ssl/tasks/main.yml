@@ -71,6 +71,22 @@
     - install_nginx_ssl
     - run_playbook
 
+- name: create sites available dir
+  file:
+    path: "{{ sites_avail }}"
+    state: directory
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+- name: create sites enabled dir
+  file:
+    path: "{{ sites_enabl }}"
+    state: directory
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
 - name: copy TLS key
   file:
     src:   '{{ ssl_docs }}nginx.key'
@@ -94,7 +110,7 @@
     - run_playbook
 
 - name: copy nginx config file
-  copy: 
+  template: 
     src: templates/nginx.conf.j2 
     dest: "{{ conf_file }}"
   notify: restart nginx

@@ -5,3 +5,5 @@ cert_file:    /etc/nginx/ssl/nginx.crt
 conf_file:    /etc/nginx/sites-available/default
 cnf_file:     /home/ansible/Ansible/nginx/ssl_docs/nginx.cnf
 ssl_script:   /home/ansible/Ansible/nginx/ssl_docs/create_ssl.sh
+sites_avail:  /etc/nginx/sites-available/
+sites_enabl:  /etc/nginx/sites-enabled/

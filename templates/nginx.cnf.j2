@@ -13,7 +13,7 @@ countryName	        = "US"
 localityName	        = "San Antonio"
 organizationName        = "lab"
 organizationalUnitName  = "local"
-commonName		= "{{ web_server }}".lab.local
+commonName		= {{ web_server }}.lab.local
 
 [ v3_req ]
 keyUsage		= keyEncipherment, dataEncipherment
@@ -21,4 +21,4 @@ extendedKeyUsage	= serverAuth, clientAuth
 subjectAltName		= @alt_names
 
 [ alt_names ]
-DNS.1 = "{{ web_server }}".lab.local
+DNS.1 = {{ web_server }}.lab.local
