@@ -6,6 +6,7 @@
     upgrade: dist
   tags:
     - install_powershell
+    - run_playbook
 
 - name: Install Supporting Packages
   apt:
@@ -15,7 +16,7 @@
       - apt-transport-https
   tags:
     - install_powershell
-
+    - run_playbook
 
 - name: Copy Repo Script
   template:
@@ -24,12 +25,14 @@
     mode: 0774
   tags:
     - install_powershell
+    - run_playbook
 
 - name: Run Repo Script
   shell:  
     cmd: 'sh /home/ansible/Documents/ps_repoupdate.sh'
   tags:
     - install_powershell
+    - run_playbook
 
 - name: Install Powershell
   apt:
@@ -38,6 +41,7 @@
       - powershell
   tags:
     - install_powershell
+    - run_playbook
 
 #########################################################
 #################REMOVES POWERSHELL######################
@@ -48,4 +52,3 @@
   tags:
     - remove_powershell
 ...
-    
