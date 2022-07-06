@@ -1,0 +1,51 @@
+---
+# Install Powershell on Debian Linux 10 or higher
+- name: Update Debian Linux
+  apt:
+    update-cache: yes
+    upgrade: dist
+  tags:
+    - install_powershell
+
+- name: Install Supporting Packages
+  apt:
+    pkg:
+      - curl
+      - gnupg
+      - apt-transport-https
+  tags:
+    - install_powershell
+
+
+- name: Copy Repo Script
+  template:
+    src: 'templates/ps_repoupdate.sh.j2'
+    dest: "/home/ansible/Documents/ps_repoupdate.sh"
+    mode: 0774
+  tags:
+    - install_powershell
+
+- name: Run Repo Script
+  shell:  
+    cmd: 'sh /home/ansible/Documents/ps_repoupdate.sh'
+  tags:
+    - install_powershell
+
+- name: Install Powershell
+  apt:
+    update-cache: yes
+    pkg:
+      - powershell
+  tags:
+    - install_powershell
+
+#########################################################
+#################REMOVES POWERSHELL######################
+- name: Remove Powershell from Controller
+  apt:
+    name: powershell
+    state: absent
+  tags:
+    - remove_powershell
+...
+    

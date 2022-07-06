@@ -1,0 +1,137 @@
+---
+# Install and Configure Nginx with SSL/TLS capability
+
+- name: add hostname as a dynamic variable
+  shell:
+    cmd: hostname
+  register: result
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+# This will store the hostname so we can dynamically assign the remote hostname to the SSL request    
+- name: store variable as a fact
+  block:
+    - set_fact:
+        web_server: "{{ result.stdout }}"
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+- name: creat an ssl_docs directory on the remote server
+  shell:
+    cmd: 'mkdir -p {{ ssl_docs }}'
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+- name: copy cnf file
+  template:
+    src: templates/nginx.cnf.j2
+    dest: "{{ cnf_file }}"
+    mode: 0774
+    owner: root
+    group: root
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+- name: copy ssl script
+  template:
+    src: 'templates/create_ssl.sh.j2'
+    dest: "{{ ssl_script }}"
+    mode: 0774
+    owner: root
+    group: root
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+- name: run script
+  shell:
+    cmd: 'sh {{ ssl_script }}'
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+- name: install nginx
+  apt: 
+    name: nginx 
+    update_cache: yes
+# update_cache is the same as running apt update on a debian system
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+- name: create ssl dirs
+  file: 
+    path: "{{ ssl_dir }}"
+    state: directory
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+- name: copy TLS key
+  file:
+    src:   '{{ ssl_docs }}nginx.key'
+    dest: "{{ key_file }}"
+    state: hard
+    owner: root
+    mode:  0600
+  notify: restart nginx
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+- name: copy TLS cert
+  file:
+    src:   '{{ ssl_docs }}nginx.crt'
+    dest:  "{{ cert_file }}"
+    state: hard
+  notify: restart nginx
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+- name: copy nginx config file
+  copy: 
+    src: templates/nginx.conf.j2 
+    dest: "{{ conf_file }}"
+  notify: restart nginx
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+- name: enable configuration
+  file:
+    dest: /etc/nginx/sites-enabled/default
+    src: "{{ conf_file }}"
+    state: link
+  notify: restart nginx
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+- name: copy index.html
+  template: 
+    src: templates/index.html.j2 
+    dest: /usr/share/nginx/html/index.html
+    mode: 0644
+  tags:
+    - install_nginx_ssl
+    - run_playbook
+
+#############REMOVES NGINX#############
+- name: Remove nginx from webservers
+  apt:
+    name: nginx
+    state: absent
+  tags:
+    - remove_nginx_ssl
+
+- name: Remove SSL artifacts
+  shell:
+    cmd: 'rm -rf /etc/nginx && rm -rf /home/ansible/Ansible'
+  tags:
+    - remove_nginx_ssl
+...

@@ -1,0 +1,29 @@
+---
+# Main playbook for multitask plays
+
+- hosts: ansible-control
+  vars_files:
+   - "./group_vars/all"
+  tasks:
+  
+  - name: Install Powershell on Controller
+    include_role:    
+      name: install_powershell
+    tags:
+      - install_powershell
+      - remove_powershell
+      - run_playbook   
+
+
+- hosts: webservers
+  vars_files:
+   - "./group_vars/all"
+  tasks:
+
+  - name: Install Nginx on Webservers
+    include_role: 
+      name: run_nginx_ssl
+    tags:
+      - install_nginx_ssl
+      - remove_nginx_ssl
+      - run_playbook
