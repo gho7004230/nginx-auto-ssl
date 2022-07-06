@@ -16,6 +16,7 @@
 
 
 - hosts: webservers
+  gather_facts: false
   vars_files:
    - "./group_vars/all"
   tasks:
