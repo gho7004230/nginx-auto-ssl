@@ -6,4 +6,4 @@ debian2.lab.local
 debian3.lab.local
 
 [webservers]
-debian3
+debian3.lab.local

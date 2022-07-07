@@ -138,6 +138,13 @@
     - run_playbook
 
 #############REMOVES NGINX#############
+- name: Stop nginx service
+  service:
+    name: nginx
+    state: stopped
+  tags:
+    - remove_nginx_ssl
+
 - name: Remove nginx from webservers
   apt:
     name: nginx
@@ -147,7 +154,7 @@
 
 - name: Remove SSL artifacts
   shell:
-    cmd: 'rm -rf /etc/nginx && rm -rf /home/ansible/Ansible'
+    cmd: 'rm -rf /home/ansible/Ansible'
   tags:
     - remove_nginx_ssl
 ...
