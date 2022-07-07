@@ -7,5 +7,5 @@ Ansible script to that configures remote client for SSL and dynamically creates 
 * custom tags:
 * - install_powershell  (Installs ps on the ansible controller; will use for added features)
   - remove_powershell
-  - run_nginx_ssl
+  - install_nginx_ssl
   - remove_nginx_ssl
